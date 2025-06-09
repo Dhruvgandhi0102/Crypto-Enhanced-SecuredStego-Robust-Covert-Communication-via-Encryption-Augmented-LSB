@@ -3,7 +3,6 @@
 from PIL import Image, ImageDraw
 import os
 import math # For isnan check
-
 # Import functions from our custom cipher_utils module
 import cipher_utils
 
@@ -223,8 +222,6 @@ def calculate_bit_metrics(original_binary: str, extracted_binary: str) -> dict:
         "Recall": recall,
         "F1-Score": f1_score
     }
-
-
 # --- Example Usage (for command-line testing) ---
 if __name__ == "__main__":
     # --- Create a dummy image for testing if you don't have one ---
@@ -241,7 +238,6 @@ if __name__ == "__main__":
     stego_image_path = "stego_output.png" # The output image with hidden message
     
     secret_message_to_embed = "My name is Dhruv."
-    encryption_key = 13 # An integer key for the byte shift cipher
 
     original_full_binary_message = "" # To store the binary message used for embedding
     extracted_decrypted_message = ""
@@ -249,7 +245,7 @@ if __name__ == "__main__":
 
     print("\n Embedding Process")
     try:
-        original_full_binary_message = embed_lsb(input_image_path, secret_message_to_embed, encryption_key, stego_image_path)
+        original_full_binary_message = embed_lsb(input_image_path, secret_message_to_embed, stego_image_path)
     except ValueError as e:
         print(f"Embedding Error: {e}")
     except Exception as e:

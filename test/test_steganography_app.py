@@ -2,6 +2,7 @@
 import pytest
 import os
 from PIL import Image, ImageDraw
+import ai_key_generator
 
 # --- UPDATED IMPORTS FOR SEPARATE FILES ---
 # Assuming these files are in the same parent directory as the 'tests' folder

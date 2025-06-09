@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, scrolledtext
 import os
 import steganography_backend
+import ai_key_generator
 
 class SteganographyApp:
     def __init__(self, master):
@@ -13,8 +14,8 @@ class SteganographyApp:
 
         # Variables to hold user inputs
         self.input_image_path = tk.StringVar()
-        self.output_image_path = tk.StringVar()
-        self.encryption_key = tk.StringVar(value="81") # Default key for convenience because 81 is Not an Extreme, Not Round or a Multiple of 10/5, Not a "Favorite Random" and Not a Prime Number. 
+        self.output_image_path = tk.StringVar()  
+        self.encryption_key = tk.StringVar() # No default value # Default key for convenience because 81 is Not an Extreme, Not Round or a Multiple of 10/5, Not a "Favorite Random" and Not a Prime Number. 
         self.secret_message = tk.StringVar() # For embedding
         self.extracted_message_display = tk.StringVar() # For extracted output
 
@@ -53,6 +54,9 @@ class SteganographyApp:
 
         tk.Label(self.extract_frame, text="Encryption Key:").grid(row=1, column=0, sticky="w", pady=2)
         tk.Entry(self.extract_frame, textvariable=self.encryption_key, width=10).grid(row=1, column=1, sticky="w", pady=2) # Reusing encryption_key
+        tk.Label(self.embed_frame, text="Encryption Key:").grid(row=2, column=0, sticky="w", pady=2)
+        tk.Entry(self.embed_frame, textvariable=self.encryption_key, width=10).grid(row=2, column=1, sticky="w", pady=2)
+        tk.Button(self.embed_frame, text="Generate AI Key", command=self.generate_ai_key_action).grid(row=2, column=2, padx=5, pady=2)
 
         tk.Button(self.extract_frame, text="Extract Message", command=self.extract_message_action).grid(row=2, column=0, columnspan=3, pady=10)
 
@@ -191,6 +195,30 @@ class SteganographyApp:
         except Exception as e:
             messagebox.showerror("Unexpected Error", f"An unexpected error occurred during extraction: {e}")
             self.update_status(f"Extraction failed: {e}", append=False)
+    # ... (other methods of SteganographyApp, e.g., after extract_message_action) ...
+
+    def generate_ai_key_action(self):
+        """
+        Handles the action of generating an AI key and updating the UI.
+        """
+        self.update_status("Generating key with AI...", append=False)
+        try:
+            # Call the backend function to generate the key
+            ai_key = ai_key_generator.generate_ai_cipher_key()
+
+            # Update the encryption key input field in the GUI with the new key
+            self.encryption_key.set(str(ai_key)) 
+
+            self.update_status(f"AI Generated Key: {ai_key}", append=True)
+            messagebox.showinfo("AI Key Generated", f"Generated Key: {ai_key}\nUse this for embedding and extracting.")
+        except ValueError as e:
+            # Catch specific errors from the backend AI key generation
+            messagebox.showerror("AI Key Generation Error", str(e))
+            self.update_status(f"AI Key Generation failed: {e}", append=False)
+        except Exception as e:
+            # Catch any other unexpected errors during the process
+            messagebox.showerror("Unexpected AI Error", f"An unexpected error occurred: {e}")
+            self.update_status(f"AI Key Generation failed: {e}", append=False)
 
 
 if __name__ == "__main__":
